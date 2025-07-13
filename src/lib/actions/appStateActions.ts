@@ -3,9 +3,10 @@ import { createThought, updateThought } from '$lib/actions/thoughtActions';
 import type { Tag } from '$lib/types';
 import { createTag, updateTag } from '$lib/actions/tagActions';
 
-export const addNewThought = (state: AppState, text: string): AppState => {
-	return {...state, thoughts: [createThought(text), ...state.thoughts]};
-};
+export const addNewThought = (state: AppState, text: string): AppState => ({
+	...state,
+	thoughts: [createThought(text), ...state.thoughts]
+});
 
 export const updateThoughtInState = (
 	state: AppState,
@@ -32,9 +33,10 @@ export const setActiveThoughtInState = (state: AppState, thoughtId: string | nul
 	activeThoughtId: thoughtId
 });
 
-export const addNewTag = (state: AppState, name: string): AppState => {
-	return {...state, tags: [createTag(name), ...state.tags]};
-};
+export const addNewTag = (state: AppState, name: string): AppState => ({
+	...state,
+	tags: [createTag(name), ...state.tags]
+});
 
 export const updateTagInState = (
 	state: AppState,

@@ -32,13 +32,14 @@
 		}
 	}
 
-	function deleteTag(tagId: string) {
+	function deleteTag(tagId: string, event: Event) {
+		event.stopPropagation(); // Prevents the event from bubbling up
 		appStore.updateState(state => removeTagFromState(state, tagId));
 	}
 
 	function toggleTag(tag: Tag) {
 		const activeThoughtId = appState.activeThoughtId;
-		if(!activeThoughtId) {
+		if (!activeThoughtId) {
 			return;
 		}
 
@@ -61,7 +62,7 @@
 		active={isTagActive(tag)}
 		onclick={() => toggleTag(tag)}>
 		<span>#{tag.name}</span>
-		<Button size="icon" variant="destructive" onclick={() => deleteTag(tag.id)}>
+		<Button size="icon" variant="destructive" onclick={(e) => deleteTag(tag.id, e)}>
 			<Trash />
 		</Button>
 	</HoverCard>
