@@ -11,11 +11,11 @@
 	});
 </script>
 
-<main class="flex gap-8">
+<main class="flex gap-4">
 	<section>
-		<Tags {appState}/>
+		<Tags {appState} />
 	</section>
 	<section class="flex-2/3">
-		<Thoughts {appState}/>
+		<Thoughts {appState} />
 	</section>
 </main>

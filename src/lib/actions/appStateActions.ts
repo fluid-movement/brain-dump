@@ -33,6 +33,11 @@ export const setActiveThoughtInState = (state: AppState, thoughtId: string | nul
 	activeThoughtId: thoughtId
 });
 
+export const setActiveTagInState = (state: AppState, tagId: string | null): AppState => ({
+	...state,
+	activeTagId: tagId
+});
+
 export const addNewTag = (state: AppState, name: string): AppState => ({
 	...state,
 	tags: [createTag(name), ...state.tags]

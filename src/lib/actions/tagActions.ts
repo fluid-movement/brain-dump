@@ -7,10 +7,7 @@ export const createTag = (name: string): Tag => ({
 	updatedAt: new Date()
 });
 
-export const updateTag = (
-	tag: Tag,
-	updates: Partial<Omit<Tag, 'id' | 'createdAt'>>
-): Tag => ({
+export const updateTag = (tag: Tag, updates: Partial<Omit<Tag, 'id' | 'createdAt'>>): Tag => ({
 	...tag,
 	...updates,
 	id: tag.id,

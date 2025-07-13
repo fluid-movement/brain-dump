@@ -12,12 +12,11 @@
 	let { children, onclick, active = false, class: classProp }: Props = $props();
 
 	let activeClass = $derived(
-		onclick ?
-			(active ?
-					'bg-primary text-primary-foreground hover:bg-primary/80' :
-					'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
-			) :
-			'bg-secondary'
+		onclick
+			? active
+				? 'bg-primary text-primary-foreground hover:bg-primary/80'
+				: 'bg-secondary hover:bg-secondary/80 text-secondary-foreground'
+			: 'bg-secondary'
 	);
 
 	function onKeyDown(event: KeyboardEvent) {
@@ -31,8 +30,9 @@
 <div
 	role="button"
 	tabindex="0"
-	onclick={onclick}
+	{onclick}
 	onkeydown={onKeyDown}
-	class={cn("cursor-default p-2 border rounded", classProp, activeClass)}>
+	class={cn('cursor-pointer p-2 border rounded', classProp, activeClass)}
+>
 	{@render children()}
 </div>

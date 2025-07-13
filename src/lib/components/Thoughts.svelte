@@ -1,18 +1,33 @@
 <script lang="ts">
 	import { appStore } from '$lib/store';
-	import { addNewThought, removeThoughtFromState, setActiveThoughtInState } from '$lib/actions/appStateActions';
+	import {
+		addNewThought,
+		removeThoughtFromState, setActiveTagInState,
+		setActiveThoughtInState
+	} from '$lib/actions/appStateActions';
 	import type { AppState, Thought } from '$lib/types';
 	import { Button } from '$lib/components/ui/button';
 	import { Trash } from '@lucide/svelte';
 	import InputForm from '$lib/components/InputForm.svelte';
 	import HoverCard from '$lib/components/HoverCard.svelte';
+	import { cn } from '$lib/utils';
 
 	interface Props {
 		appState: AppState;
 	}
 
 	let { appState }: Props = $props();
-	let thoughts = $derived(appState.thoughts);
+	
+	let thoughts = $derived.by(() => {
+		const activeTag = appState.activeTagId;
+		if (!activeTag) {
+			return appState.thoughts
+		} else {
+			return appState.thoughts.filter((thought) =>
+				thought.tags.some((tag) => tag.id === activeTag)
+			);
+		}
+	});
 	let value = $state('');
 
 	function onThoughtKeyPress(event: KeyboardEvent) {
@@ -24,24 +39,25 @@
 	function addThought(event: Event) {
 		event.preventDefault();
 		if (value.trim() !== '') {
-			appStore.updateState(state => addNewThought(state, value));
+			appStore.updateState((state) => addNewThought(state, value));
 			value = '';
 			const latestThought = appState.thoughts.at(0);
-			if(typeof latestThought?.id === "string") {
-				appStore.updateState(state => setActiveThoughtInState(state, latestThought.id))
+			if (typeof latestThought?.id === 'string') {
+				appStore.updateState((state) => setActiveThoughtInState(state, latestThought.id));
 			}
 		}
 	}
 
 	function deleteThought(thoughtId: string) {
-		appStore.updateState(state => removeThoughtFromState(state, thoughtId));
+		appStore.updateState((state) => removeThoughtFromState(state, thoughtId));
 	}
 
 	function setActiveThought(thoughtId: string | null) {
+		appStore.updateState((state) => setActiveTagInState(state, null));
 		if (thoughtId === appState.activeThoughtId) {
-			appStore.updateState(state => setActiveThoughtInState(state, null));
+			appStore.updateState((state) => setActiveThoughtInState(state, null));
 		} else {
-			appStore.updateState(state => setActiveThoughtInState(state, thoughtId));
+			appStore.updateState((state) => setActiveThoughtInState(state, thoughtId));
 		}
 	}
 
@@ -57,15 +73,13 @@
 	>
 		<div class="flex items-center justify-between gap-2">
 			<div>{thought.text}</div>
-			<Button size="icon"
-							variant="destructive"
-							onclick={() => deleteThought(thought.id)}>
+			<Button size="icon" variant="destructive" onclick={() => deleteThought(thought.id)}>
 				<Trash />
 			</Button>
 		</div>
 		<div class="flex gap-4">
 			{#each thought.tags as tag (tag.id)}
-				<span class="text-xs">#{abbreviateText(tag.name)}</span>
+				<span class={cn("bg-accent text-xs rounded px-2", appState.activeTagId === tag.id ? "bg-accent-foreground text-accent" : "")}>#{abbreviateText(tag.name)}</span>
 			{/each}
 		</div>
 	</HoverCard>
@@ -73,7 +87,7 @@
 
 <InputForm
 	bind:value
-	placeholder='Type thoughts here...'
+	placeholder="Type thoughts here..."
 	onSubmit={addThought}
 	onKeyDown={onThoughtKeyPress}
 	classProp="mb-4"

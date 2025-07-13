@@ -8,7 +8,7 @@ const STORAGE_KEY = 'brain-dump-store';
 const initialState: AppState = {
 	thoughts: [],
 	tags: [],
-	activeThoughtId: null,
+	activeThoughtId: null
 };
 
 // Custom serializer/deserializer for Date objects
@@ -22,16 +22,18 @@ function deserialize(json: string): AppState {
 	// Convert date strings back to Date objects
 	return {
 		...parsed,
-		thoughts: parsed.thoughts?.map((thought: any) => ({
-			...thought,
-			createdAt: new Date(thought.createdAt),
-			updatedAt: new Date(thought.updatedAt)
-		})) || [],
-		categories: parsed.categories?.map((category: any) => ({
-			...category,
-			createdAt: new Date(category.createdAt),
-			updatedAt: new Date(category.updatedAt)
-		})) || []
+		thoughts:
+			parsed.thoughts?.map((thought: any) => ({
+				...thought,
+				createdAt: new Date(thought.createdAt),
+				updatedAt: new Date(thought.updatedAt)
+			})) || [],
+		categories:
+			parsed.categories?.map((category: any) => ({
+				...category,
+				createdAt: new Date(category.createdAt),
+				updatedAt: new Date(category.updatedAt)
+			})) || []
 	};
 }
 
@@ -70,7 +72,7 @@ function createAppStore() {
 
 		// Update specific parts of state
 		updateState: (updater: (state: AppState) => AppState) => {
-			update(state => {
+			update((state) => {
 				const newState = updater(state);
 				saveToStorage(newState);
 				return newState;
